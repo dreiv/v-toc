@@ -12,9 +12,7 @@ const { items } = useRailItems(sections)
     <ul class="toc__list">
       <li v-for="item in items" :key="item.section.id" class="toc__item"
         :class="`toc__item--level-${item.section.level}`">
-        <span v-if="item.hasJog" class="toc__rail-h" aria-hidden="true"
-          :style="{ animationTimeline: sectionTimelineName(item.section.index) }" />
-        <span class="toc__rail-v" aria-hidden="true"
+        <span class="toc__rail" :class="{ 'toc__rail--jog': item.hasJog }" aria-hidden="true"
           :style="{ animationTimeline: sectionTimelineName(item.section.index) }" />
         <a :href="`#${item.section.id}`" class="toc__link toc__link--css"
           :style="{ animationTimeline: sectionTimelineName(item.section.index) }">
@@ -26,38 +24,31 @@ const { items } = useRailItems(sections)
 </template>
 
 <style scoped>
-.toc__rail-v,
-.toc__rail-h {
+.toc__rail {
   position: absolute;
-  background: transparent;
-  pointer-events: none;
-}
-
-.toc__rail-v {
   top: 0;
   bottom: 0;
-  width: 2px;
-}
-
-.toc__item--level-0 .toc__rail-v {
-  left: -0.75rem;
-}
-
-.toc__item--level-1 .toc__rail-v {
-  left: 0.5rem;
-}
-
-.toc__rail-h {
-  top: 0;
   left: -0.75rem;
   width: 1.25rem;
-  height: 2px;
+  box-sizing: border-box;
+  pointer-events: none;
+  border: 0 solid transparent;
+}
+
+.toc__item--level-0 .toc__rail {
+  border-left-width: 2px;
+}
+
+.toc__item--level-1 .toc__rail {
+  border-right-width: 2px;
+}
+
+.toc__rail--jog {
+  border-top-width: 2px;
 }
 
 @supports (animation-timeline: view()) {
-
-  .toc__rail-v,
-  .toc__rail-h {
+  .toc__rail {
     animation: bar-glow linear both;
     animation-range: cover 0% cover 100%;
   }
@@ -70,16 +61,16 @@ const { items } = useRailItems(sections)
 
 @keyframes bar-glow {
   0% {
-    background: transparent;
+    border-color: transparent;
   }
 
   15%,
   85% {
-    background: var(--accent-teal);
+    border-color: var(--accent-teal);
   }
 
   100% {
-    background: transparent;
+    border-color: transparent;
   }
 }
 
@@ -103,8 +94,7 @@ const { items } = useRailItems(sections)
 
 @media (prefers-reduced-motion: reduce) {
 
-  .toc__rail-v,
-  .toc__rail-h,
+  .toc__rail,
   .toc__link--css {
     animation: none;
   }
