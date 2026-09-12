@@ -1,27 +1,36 @@
-# .
+# v-toc — progress rail demo
 
-This template should help get you started developing with Vue 3 in Vite.
+A small Vue 3 + TypeScript page rebuilding the classic
+[hakim.se/progress-nav](https://lab.hakim.se/progress-nav/) vertical progress rail two ways, plus
+~10 screen-heights of original filler copy to scroll through. Switch between the two with the
+control at the bottom of the page.
 
-## Recommended IDE Setup
+- **Vue + observer** (`ProgressNavJs.vue`) — a `useScrollProgress` composable computes overall
+  scroll progress (`@vueuse/core`'s `useWindowScroll`) and the currently-active section
+  (`IntersectionObserver`, centred on the viewport). Sections register themselves in a small
+  shared registry (`sectionRegistry.ts`) so the nav never has to query the DOM directly.
+- **CSS only** (`ProgressNavCss.vue`) — no scroll listener, no observer, no reactive state. The
+  fill line uses `animation-timeline: scroll(root)`; each dot watches its own section via a named
+  `view-timeline` (`view-timeline-name: --section-N` set on the `<section>`, consumed with
+  `animation-timeline: --section-N` on the dot). Navigation is plain `<a href="#id">` anchors with
+  `scroll-behavior: smooth`.
+- The **top bar** is always CSS-only, as the simplest possible demonstration of
+  `animation-timeline: scroll()`.
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+Both rails read from the same `src/data/sections.ts`, so content, ids, and ordering can't drift
+apart between them.
 
-## Recommended Browser Setup
+## Browser support
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+Scroll-driven animations (`animation-timeline: scroll()` / `view()`) are a newer CSS feature.
+Where unsupported, everything wrapped in `@supports (animation-timeline: ...)` simply stays static
+instead of breaking — the top bar sits at zero, dots keep their resting style, and the CSS-only
+rail is still fully usable as a set of anchor links. `prefers-reduced-motion` is also respected.
 
-## Type Support for `.vue` Imports in TS
+## Stack
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
+Vue 3 (`<script setup>`, TypeScript), Vite, Tailwind CSS v4 (via `@tailwindcss/vite`), `@vueuse/core`
+for the scroll/resize plumbing, `@lucide/vue` for icons.
 
 ## Project Setup
 
@@ -41,7 +50,7 @@ npm run dev
 npm run build
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+### Lint
 
 ```sh
 npm run lint
