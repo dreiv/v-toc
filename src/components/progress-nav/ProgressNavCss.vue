@@ -1,8 +1,4 @@
 <script setup lang="ts">
-// No reactive state, no scroll or resize listeners: every visual change is
-// computed by the browser's compositor from a named view-timeline. The only
-// thing computed here is which items need a horizontal "jog" (see
-// useRailItems).
 import { sections } from '@/data/sections'
 import { useRailItems } from '@/composables/useRailItems'
 import { sectionTimelineName } from '@/utils/timeline'
@@ -35,7 +31,6 @@ const { items } = useRailItems(sections)
   position: absolute;
   background: transparent;
   pointer-events: none;
-  border-radius: 1px;
 }
 
 .toc__rail-v {

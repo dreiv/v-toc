@@ -7,6 +7,7 @@ import type { Section } from '@/types/section'
 // sections can both qualify.
 const TOP_MARGIN = 0.1
 const BOTTOM_MARGIN = 0.2
+const ANCHOR_X_OFFSET = 5
 
 interface ItemMeta {
   id: string
@@ -59,7 +60,7 @@ export function useProgressPath(items: Section[]) {
       if (!anchor || !target) continue
 
       const anchorRect = anchor.getBoundingClientRect()
-      const x = anchorRect.left - svgRect.left - 5
+      const x = anchorRect.left - svgRect.left - ANCHOR_X_OFFSET
       const y = anchorRect.top - svgRect.top
       const height = anchorRect.height
 

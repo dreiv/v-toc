@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Binary, Cpu } from '@lucide/vue'
-
-export type RailMode = 'js' | 'css'
+import type { RailMode } from '@/types/rail-mode'
 
 defineProps<{ modelValue: RailMode }>()
 defineEmits<{ 'update:modelValue': [value: RailMode] }>()
