@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, useTemplateRef } from 'vue'
 import { sections } from '@/data/sections'
+import { sectionTimelineName } from '@/utils/timeline'
 import PageHero from '@/components/layout/PageHero.vue'
 import RailModeSwitch, { type RailMode } from '@/components/layout/RailModeSwitch.vue'
 import FillerContent from '@/components/filler/FillerContent.vue'
@@ -13,15 +14,13 @@ const mode = ref<RailMode>('js')
 // The CSS-only rail references each section's view-timeline by name from a
 // sibling subtree (the <nav>, not a descendant of the <section>s). Named
 // timelines only cross into sibling subtrees when an ancestor declares them
-// with `timeline-scope`, so this app root lists every name once, generated
-// from the same section data everything else uses.
+// with `timeline-scope`, so this app root lists every name once.
 //
-// Set imperatively via setProperty rather than a Vue :style binding:
-// timeline-scope is new enough that relying on a camelCase `style.timelineScope`
-// IDL accessor existing on every supporting engine is riskier than just
-// calling setProperty directly.
+// Set via setProperty rather than a Vue :style binding: timeline-scope is
+// new enough that relying on a camelCase `style.timelineScope` IDL accessor
+// is riskier than calling setProperty directly.
 const rootEl = useTemplateRef<HTMLDivElement>('root')
-const timelineScopeValue = sections.map((section) => `--section-${section.index}`).join(', ')
+const timelineScopeValue = sections.map((section) => sectionTimelineName(section.index)).join(', ')
 
 onMounted(() => {
   rootEl.value?.style.setProperty('timeline-scope', timelineScopeValue)

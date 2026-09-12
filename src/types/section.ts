@@ -1,14 +1,13 @@
 /**
  * A single reading section of the field-notes essay.
  *
- * `index` is the section's zero-based position and doubles as the suffix
- * used to name its CSS view-timeline (`--section-${index}`), so the CSS-only
- * nav and the JS-driven nav stay in sync with the same source of truth.
+ * `index` is the zero-based position; it also names the section's CSS
+ * view-timeline (`--section-${index}`) so both nav variants share one source
+ * of truth.
  *
- * `level` mirrors the indent level of the matching nav entry — 0 for a
- * top-level heading, 1 for a subsection nested under the previous one. It's
- * what gives the rail its zigzag ("snake") shape: the connecting line jogs
- * sideways wherever level changes between two consecutive items.
+ * `level` mirrors the nav entry's indent (0 = top-level, 1 = subsection).
+ * It's what gives the rail its zigzag: the line jogs sideways wherever
+ * level changes between two consecutive items.
  */
 export interface Section {
   id: string

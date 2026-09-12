@@ -1,44 +1,27 @@
 <script setup lang="ts">
-// No reactive state, no scroll or resize listeners: every visual change on
-// this rail — each segment of the connecting line, each link's highlight —
-// is computed by the browser's compositor from a named view-timeline. The
-// only thing computed here is which items need a horizontal "jog" before
-// them, which is static geometry derived once from the section list, not a
-// runtime measurement.
+// No reactive state, no scroll or resize listeners: every visual change is
+// computed by the browser's compositor from a named view-timeline. The only
+// thing computed here is which items need a horizontal "jog" (see
+// useRailItems).
 import { sections } from '@/data/sections'
+import { useRailItems } from '@/composables/useRailItems'
+import { sectionTimelineName } from '@/utils/timeline'
 import '@/assets/rail.css'
 
-const items = sections.map((section, i) => ({
-  section,
-  hasJog: i > 0 && sections[i - 1]!.level !== section.level,
-}))
+const { items } = useRailItems(sections)
 </script>
 
 <template>
   <nav class="toc toc--css" aria-label="Reading progress (CSS only)">
     <ul class="toc__list">
-      <li
-        v-for="item in items"
-        :key="item.section.id"
-        class="toc__item"
-        :class="`toc__item--level-${item.section.level}`"
-      >
-        <span
-          v-if="item.hasJog"
-          class="toc__rail-h"
-          aria-hidden="true"
-          :style="{ animationTimeline: `--section-${item.section.index}` }"
-        />
-        <span
-          class="toc__rail-v"
-          aria-hidden="true"
-          :style="{ animationTimeline: `--section-${item.section.index}` }"
-        />
-        <a
-          :href="`#${item.section.id}`"
-          class="toc__link toc__link--css"
-          :style="{ animationTimeline: `--section-${item.section.index}` }"
-        >
+      <li v-for="item in items" :key="item.section.id" class="toc__item"
+        :class="`toc__item--level-${item.section.level}`">
+        <span v-if="item.hasJog" class="toc__rail-h" aria-hidden="true"
+          :style="{ animationTimeline: sectionTimelineName(item.section.index) }" />
+        <span class="toc__rail-v" aria-hidden="true"
+          :style="{ animationTimeline: sectionTimelineName(item.section.index) }" />
+        <a :href="`#${item.section.id}`" class="toc__link toc__link--css"
+          :style="{ animationTimeline: sectionTimelineName(item.section.index) }">
           {{ item.section.title }}
         </a>
       </li>
@@ -76,6 +59,7 @@ const items = sections.map((section, i) => ({
 }
 
 @supports (animation-timeline: view()) {
+
   .toc__rail-v,
   .toc__rail-h {
     animation: bar-glow linear both;
@@ -89,21 +73,25 @@ const items = sections.map((section, i) => ({
 }
 
 @keyframes bar-glow {
+
   0%,
   100% {
     background: var(--rule);
   }
+
   50% {
     background: var(--accent-teal);
   }
 }
 
 @keyframes link-glow {
+
   0%,
   100% {
     color: var(--ink-faint);
     transform: translateX(0);
   }
+
   50% {
     color: var(--ink);
     transform: translateX(5px);
@@ -111,6 +99,7 @@ const items = sections.map((section, i) => ({
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .toc__rail-v,
   .toc__rail-h,
   .toc__link--css {

@@ -1,11 +1,10 @@
 import type { Section } from '@/types/section'
 
 /**
- * Filler copy for the demo, written for this page rather than lorem ipsum.
- * A mix of top-level sections (`level: 0`) and short nested subsections
- * (`level: 1`) — the indent change between the two is what makes the
- * connecting line in the nav zigzag, and the shorter subsections are what
- * let two or three headings sit in the viewport together.
+ * Filler copy for the demo. Mixes top-level sections (`level: 0`) with short
+ * nested subsections (`level: 1`): the indent change makes the nav line
+ * zigzag, and the short subsections let two or three headings share the
+ * viewport.
  */
 const content: Array<Pick<Section, 'id' | 'level' | 'title' | 'paragraphs'>> = [
   {
@@ -104,7 +103,7 @@ const content: Array<Pick<Section, 'id' | 'level' | 'title' | 'paragraphs'>> = [
     level: 0,
     title: 'A timeline instead of a listener',
     paragraphs: [
-      'Scroll-driven animation asks a different question again: what if scroll position were a clock to animate against, rather than an event to react to? `animation-timeline: scroll()` swaps an animation\'s usual wall-clock timer for the scroll offset of a container, so the animation simply is a function of where you are on the page — no handler keeping the two in sync, because there was never anything to keep in sync.',
+      "Scroll-driven animation asks a different question again: what if scroll position were a clock to animate against, rather than an event to react to? `animation-timeline: scroll()` swaps an animation's usual wall-clock timer for the scroll offset of a container, so the animation simply is a function of where you are on the page — no handler keeping the two in sync, because there was never anything to keep in sync.",
     ],
   },
   {

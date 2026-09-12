@@ -1,10 +1,10 @@
-import { onMounted, reactive, shallowRef } from 'vue'
+import { onMounted, reactive, shallowRef, type ComponentPublicInstance } from 'vue'
 import { useEventListener } from '@vueuse/core'
 import type { Section } from '@/types/section'
 
-// Same thresholds as the original demo: a section counts as "on screen" if
-// any part of it falls between 10% and 80% down the viewport. The band is
-// deliberately loose so that two short, adjacent sections can both qualify.
+// A section counts as "on screen" if any part falls between 10% and 80% down
+// the viewport. The band is deliberately loose so two short, adjacent
+// sections can both qualify.
 const TOP_MARGIN = 0.1
 const BOTTOM_MARGIN = 0.2
 
@@ -16,10 +16,9 @@ interface ItemMeta {
 }
 
 /**
- * Drives the JS version of the rail: builds one SVG path threading through
- * every nav link's real on-screen position (so the line jogs sideways
- * wherever indentation changes), then on scroll highlights the stretch of
- * that path spanning every currently-visible section at once.
+ * Drives the JS rail: builds one SVG path through every nav link's real
+ * on-screen position (jogging sideways wherever indentation changes), then
+ * on scroll highlights the stretch spanning every currently-visible section.
  */
 export function useProgressPath(items: Section[]) {
   const pathEl = shallowRef<SVGPathElement>()
@@ -32,7 +31,9 @@ export function useProgressPath(items: Section[]) {
   let lastStart = -1
   let lastEnd = -1
 
-  function setLinkEl(id: string, el: unknown) {
+  // The template-ref callback hands back a broad union; only a real element
+  // is useful.
+  function setLinkEl(id: string, el: Element | ComponentPublicInstance | null) {
     if (el instanceof HTMLElement) linkEls.set(id, el)
     else linkEls.delete(id)
   }
@@ -44,9 +45,8 @@ export function useProgressPath(items: Section[]) {
 
     // Measured against the marker SVG's own box rather than via
     // offsetLeft/offsetTop: those are relative to the nearest *positioned*
-    // ancestor, which can be an individual <li> (it needs position:relative
-    // for the CSS-only rail's bars) rather than the nav as a whole.
-    // getBoundingClientRect side-steps that entirely.
+    // ancestor, which can be an individual <li> rather than the nav as a
+    // whole. getBoundingClientRect side-steps that.
     const svgRect = svg.getBoundingClientRect()
 
     const measured: ItemMeta[] = []
@@ -112,7 +112,10 @@ export function useProgressPath(items: Section[]) {
     if (visibleCount > 0 && pathStart < pathEnd) {
       if (pathStart !== lastStart || pathEnd !== lastEnd) {
         path.setAttribute('stroke-dashoffset', '1')
-        path.setAttribute('stroke-dasharray', `1, ${pathStart}, ${pathEnd - pathStart}, ${pathLength}`)
+        path.setAttribute(
+          'stroke-dasharray',
+          `1, ${pathStart}, ${pathEnd - pathStart}, ${pathLength}`,
+        )
         path.setAttribute('opacity', '1')
       }
     } else {

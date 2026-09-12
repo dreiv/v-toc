@@ -1,7 +1,7 @@
 /* Shared skeleton for both rails: a fixed list of real links styled like a
-   table of contents, with a marker (SVG path or CSS bars, depending on the
-   variant) layered behind it. Kept out of each component's scoped style so
-   the two variants can't visually drift apart while their mechanics differ. */
+   table of contents, with a variant-specific marker layered behind it. Kept
+   out of each component's scoped style so the two variants can't visually
+   drift apart. */
 
 .toc {
   position: fixed;

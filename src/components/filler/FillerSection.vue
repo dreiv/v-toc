@@ -1,18 +1,14 @@
 <script setup lang="ts">
 import type { Section } from '@/types/section'
+import { sectionTimelineName } from '@/utils/timeline'
 
 defineProps<{ section: Section }>()
 </script>
 
 <template>
-  <component
-    :is="section.level === 0 ? 'section' : 'aside'"
-    :id="section.id"
-    :data-section-id="section.id"
-    :style="{ viewTimelineName: `--section-${section.index}` }"
-    class="section"
-    :class="`section--level-${section.level}`"
-  >
+  <component :is="section.level === 0 ? 'section' : 'aside'" :id="section.id"
+    :style="{ viewTimelineName: sectionTimelineName(section.index) }" class="section"
+    :class="`section--level-${section.level}`">
     <component :is="section.level === 0 ? 'h2' : 'h3'" class="section__title">
       {{ section.title }}
     </component>
