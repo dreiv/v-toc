@@ -18,7 +18,7 @@ defineEmits<{ 'update:modelValue': [value: RailMode] }>()
       @click="$emit('update:modelValue', 'js')"
     >
       <Cpu :size="14" aria-hidden="true" />
-      Vue + observer
+      Vue + scroll
     </button>
     <button
       type="button"

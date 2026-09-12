@@ -7,9 +7,10 @@ import { ChevronDown } from '@lucide/vue'
     <p class="hero__eyebrow">field notes · progress navigation</p>
     <h1 class="hero__title">A rail in the margin</h1>
     <p class="hero__lede">
-      A short, scrollable essay about the small vertical rail that tracks where you are in a long
-      page — rebuilt two ways below: once with Vue and a scroll composable, once with nothing but
-      CSS scroll-driven animations.
+      A short essay about the table-of-contents nav that also tracks your place in a long page —
+      the list of links doubles as the marker, and the line connecting them snakes sideways at
+      every subsection. Rebuilt two ways below: once with Vue measuring real DOM positions, once
+      with nothing but CSS scroll-driven animations.
     </p>
     <p class="hero__cue">
       <ChevronDown :size="16" aria-hidden="true" />

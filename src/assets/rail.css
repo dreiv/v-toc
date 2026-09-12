@@ -1,110 +1,65 @@
-/* Shared skeleton for both progress rails. Kept out of each component's
-   scoped style so the JS and CSS variants can't drift apart visually while
-   their behaviour (how the fill grows, how a dot goes active) differs. */
+/* Shared skeleton for both rails: a fixed list of real links styled like a
+   table of contents, with a marker (SVG path or CSS bars, depending on the
+   variant) layered behind it. Kept out of each component's scoped style so
+   the two variants can't visually drift apart while their mechanics differ. */
 
-.rail {
+.toc {
   position: fixed;
+  left: clamp(1.25rem, 4vw, 3rem);
   top: 50%;
-  right: clamp(1rem, 3vw, 2.5rem);
   transform: translateY(-50%);
+  width: 13rem;
   z-index: 30;
 }
 
-.rail__frame {
+.toc__list {
   position: relative;
-  display: flex;
-  padding-inline-end: 0.35rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  line-height: 1.9;
 }
 
-.rail__track,
-.rail__fill {
-  position: absolute;
-  top: 0.5rem;
-  bottom: 0.5rem;
-  left: 2px;
-  width: 2px;
+.toc__item {
+  position: relative;
+}
+
+.toc__item--level-1 {
+  padding-left: 1.25rem;
+}
+
+.toc__link {
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  text-decoration: none;
+  transition:
+    color 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+    transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.toc__item--level-1 .toc__link {
+  font-size: 0.74rem;
+}
+
+.toc__link:focus-visible {
+  outline: 2px solid var(--accent-teal);
+  outline-offset: 3px;
   border-radius: 2px;
 }
 
-.rail__track {
-  background: var(--rule);
-}
-
-.rail__fill {
-  background: var(--accent-teal);
-  transform-origin: top;
-}
-
-.rail__list {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: clamp(1rem, 2.4vw, 1.6rem);
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.rail__dot {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.4rem;
-  height: 1.4rem;
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.rail__dot-core {
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 999px;
-  background: var(--paper);
-  border: 1.5px solid var(--ink-faint);
-  transition:
-    background 0.15s ease,
-    border-color 0.15s ease,
-    transform 0.15s ease;
-}
-
-.rail__tooltip {
-  position: absolute;
-  right: calc(100% + 0.6rem);
-  top: 50%;
-  transform: translateY(-50%) translateX(4px);
-  white-space: nowrap;
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
+/* JS variant toggles this class; the CSS variant applies the same look via
+   an animation bound to the section's own view-timeline. */
+.toc__item--visible > .toc__link,
+.toc__link--visible {
   color: var(--ink);
-  background: var(--paper);
-  border: 1px solid var(--rule);
-  padding: 0.25rem 0.55rem;
-  border-radius: 3px;
-  opacity: 0;
-  pointer-events: none;
-  transition:
-    opacity 0.15s ease,
-    transform 0.15s ease;
-}
-
-.rail__dot:hover .rail__tooltip,
-.rail__dot:focus-visible .rail__tooltip {
-  opacity: 1;
-  transform: translateY(-50%) translateX(0);
-}
-
-.rail__dot:focus-visible {
-  outline: 2px solid var(--accent-teal);
-  outline-offset: 3px;
-  border-radius: 999px;
+  transform: translateX(5px);
 }
 
 @media (max-width: 55rem) {
-  .rail {
+  .toc {
     display: none;
   }
 }

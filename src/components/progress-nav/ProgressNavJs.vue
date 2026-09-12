@@ -1,48 +1,60 @@
 <script setup lang="ts">
-import { inject } from 'vue'
 import { sections } from '@/data/sections'
-import { SectionRegistryKey } from '@/composables/sectionRegistry'
-import { useScrollProgress } from '@/composables/useScrollProgress'
+import { useProgressPath } from '@/composables/useProgressPath'
 import '@/assets/rail.css'
 
-const registry = inject(SectionRegistryKey)
-if (!registry) throw new Error('ProgressNavJs must be mounted below a section registry provider')
-
-const { progress, activeId } = useScrollProgress(sections, registry)
-
-function goToSection(id: string) {
-  registry?.elements.get(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-}
+const { pathEl, svgEl, setLinkEl, visibleIds, goTo } = useProgressPath(sections)
 </script>
 
 <template>
-  <nav class="rail" aria-label="Reading progress">
-    <div class="rail__frame">
-      <div class="rail__track" />
-      <div class="rail__fill" :style="{ transform: `scaleY(${progress})` }" />
-      <ol class="rail__list">
-        <li v-for="section in sections" :key="section.id">
-          <button
-            type="button"
-            class="rail__dot"
-            :class="{ 'rail__dot--active': activeId === section.id }"
-            :aria-current="activeId === section.id ? 'true' : undefined"
-            :aria-label="section.title"
-            @click="goToSection(section.id)"
-          >
-            <span class="rail__dot-core" />
-            <span class="rail__tooltip">{{ section.title }}</span>
-          </button>
-        </li>
-      </ol>
-    </div>
+  <nav class="toc" aria-label="Reading progress">
+    <ul class="toc__list">
+      <li
+        v-for="section in sections"
+        :key="section.id"
+        class="toc__item"
+        :class="[`toc__item--level-${section.level}`, { 'toc__item--visible': visibleIds.has(section.id) }]"
+      >
+        <a
+          :ref="(el) => setLinkEl(section.id, el)"
+          :href="`#${section.id}`"
+          class="toc__link"
+          @click.prevent="goTo(section.id)"
+        >
+          {{ section.title }}
+        </a>
+      </li>
+    </ul>
+
+    <svg ref="svgEl" class="toc__marker" aria-hidden="true">
+      <path
+        ref="pathEl"
+        stroke-width="2"
+        fill="transparent"
+        stroke-dasharray="0, 0, 0, 1000"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        opacity="0"
+      />
+    </svg>
   </nav>
 </template>
 
 <style scoped>
-.rail__dot--active .rail__dot-core {
-  background: var(--accent-rust);
-  border-color: var(--accent-rust);
-  transform: scale(1.35);
+.toc__marker {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.toc__marker path {
+  stroke: var(--accent-teal);
+  transition:
+    stroke-dasharray 0.3s ease,
+    opacity 0.3s ease;
 }
 </style>

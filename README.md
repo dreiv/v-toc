@@ -5,27 +5,36 @@ A small Vue 3 + TypeScript page rebuilding the classic
 ~10 screen-heights of original filler copy to scroll through. Switch between the two with the
 control at the bottom of the page.
 
-- **Vue + observer** (`ProgressNavJs.vue`) — a `useScrollProgress` composable computes overall
-  scroll progress (`@vueuse/core`'s `useWindowScroll`) and the currently-active section
-  (`IntersectionObserver`, centred on the viewport). Sections register themselves in a small
-  shared registry (`sectionRegistry.ts`) so the nav never has to query the DOM directly.
-- **CSS only** (`ProgressNavCss.vue`) — no scroll listener, no observer, no reactive state. The
-  fill line uses `animation-timeline: scroll(root)`; each dot watches its own section via a named
-  `view-timeline` (`view-timeline-name: --section-N` set on the `<section>`, consumed with
-  `animation-timeline: --section-N` on the dot). Navigation is plain `<a href="#id">` anchors with
-  `scroll-behavior: smooth`.
+- **Vue + scroll** (`ProgressNavJs.vue`) — a `useProgressPath` composable ports the original demo's
+  own algorithm: it walks the real nav links, measures their on-screen positions, and draws one
+  SVG path that jogs sideways at every indent change. On scroll it finds every section currently
+  inside a 10%–80% viewport band and highlights the single stretch of path spanning from the
+  first one to the last, via a `stroke-dasharray` trick — so two sections on screen together light
+  up as one continuous run.
+- **CSS only** (`ProgressNavCss.vue`) — no scroll listener, no measurement, no reactive state.
+  Each nav item gets its own vertical (and, where indentation changes, horizontal) line segment,
+  and both the segment and its link text animate against that section's own named `view-timeline`
+  (`view-timeline-name: --section-N` set on the `<section>`/`<aside>`, consumed via
+  `animation-timeline: --section-N`). Because every item watches only its own timeline, several
+  can highlight at once with no coordination between them. Navigation is plain `<a href="#id">`
+  with `scroll-behavior: smooth`. Named timelines only reach sibling subtrees when an ancestor
+  declares them, so `App.vue` sets `timeline-scope` once, generated from the same section list.
 - The **top bar** is always CSS-only, as the simplest possible demonstration of
   `animation-timeline: scroll()`.
 
-Both rails read from the same `src/data/sections.ts`, so content, ids, and ordering can't drift
-apart between them.
+Both rails render the *same* table-of-contents text (a real `<nav><ul><li><a>` list, not
+decorative dots), reading from one `src/data/sections.ts` — including which items are nested
+subsections, which is what gives the connecting line its zigzag. Content sections are normal
+flowing prose (no forced full-viewport padding), so it's common for two or three headings to sit
+in the viewport together.
 
 ## Browser support
 
-Scroll-driven animations (`animation-timeline: scroll()` / `view()`) are a newer CSS feature.
-Where unsupported, everything wrapped in `@supports (animation-timeline: ...)` simply stays static
-instead of breaking — the top bar sits at zero, dots keep their resting style, and the CSS-only
-rail is still fully usable as a set of anchor links. `prefers-reduced-motion` is also respected.
+Scroll-driven animations (`animation-timeline`, `view-timeline-name`, `timeline-scope`) are a
+newer CSS feature. Where unsupported, everything wrapped in `@supports (animation-timeline: ...)`
+simply stays static instead of breaking — the top bar sits at zero, nav items keep their resting
+style, and the CSS-only rail is still fully usable as a set of anchor links. `prefers-reduced-motion`
+is also respected.
 
 ## Stack
 

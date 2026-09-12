@@ -1,90 +1,143 @@
 import type { Section } from '@/types/section'
 
 /**
- * Filler copy for the demo. Written specifically for this page rather than
- * lorem ipsum, so the scroll feels like reading something instead of
- * padding. Each entry becomes one full-height section of the essay.
+ * Filler copy for the demo, written for this page rather than lorem ipsum.
+ * A mix of top-level sections (`level: 0`) and short nested subsections
+ * (`level: 1`) — the indent change between the two is what makes the
+ * connecting line in the nav zigzag, and the shorter subsections are what
+ * let two or three headings sit in the viewport together.
  */
-const content: Array<Pick<Section, 'id' | 'title' | 'paragraphs'>> = [
+const content: Array<Pick<Section, 'id' | 'level' | 'title' | 'paragraphs'>> = [
   {
     id: 'origins',
+    level: 0,
     title: 'A memory from the margins',
     paragraphs: [
-      'Years ago a small demo made the rounds: a slim vertical rail sitting quietly in the corner of the screen, a line of dots standing in for the sections of a page. As you scrolled, a thread climbed the rail behind them, and whichever dot the thread had just passed lit up. Nothing about it announced itself. It just sat there, correct, the whole time.',
-      'What stayed with me was not the visual trick but the honesty of it. The rail never lied about where you were. It did not need a moment to catch up, and it did not need you to click anything to know your place. It was a small, patient instrument, built for a single job.',
-      'This page is an attempt to sit with that memory long enough to rebuild it twice: once the way it was likely made at the time, driven by scroll math and a bit of Vue, and once the way the browser can now do it almost entirely on its own.',
+      'Years ago a small demo made the rounds: a plain list of section titles sitting quietly in the corner of the page, with a thin line running down beside it. Scroll, and the line grew to trace whichever titles were currently on screen, no dots or icons involved — just the table of contents, doing double duty as the progress indicator.',
+      'What stayed with me was the restraint. It never needed a moment to catch up, never asked you to click anything to know where you were, and never dressed up as more than what it was: a list of headings that happened to know which of them you were reading.',
     ],
   },
   {
     id: 'scrollspy',
+    level: 0,
     title: 'The trouble with watching scroll',
     paragraphs: [
-      'The obvious way to know where a reader is on a long page is to ask, constantly. Attach a handler to the scroll event, read the position, compare it against the top of every section, and decide who wins. It works, in the sense that it produces an answer.',
-      'The trouble is the asking itself. A scroll handler fires far more often than any human needs a decision made, and if that handler does anything more than trivial arithmetic, the page starts to stutter under its own bookkeeping. Developers spent a long time throttling, debouncing, and reading layout in careful batches just to keep this one small feature from costing more than it earned.',
-      'None of that effort was wasted, exactly, but it was effort spent compensating for asking the wrong question. The right question was never "where is the reader right now, this millisecond" — it was "which section are they currently inside of," and that is a question about state, not about motion.',
+      'The obvious way to know where a reader is on a long page is to ask, constantly: attach a handler to the scroll event, read the position, compare it against every section, and decide who wins. It works, in the sense that it produces an answer.',
     ],
   },
   {
-    id: 'circles',
-    title: 'Circles, lines, thresholds',
+    id: 'throttling',
+    level: 1,
+    title: 'Debounce, throttle, repeat',
     paragraphs: [
-      'A progress rail is a small piece of information design before it is a piece of code. The dots stand for sections, evenly spaced regardless of how long each section actually runs, because the reader does not care how many words a section took — they care how many are left.',
-      'The connecting line matters as much as the dots. Without it, the rail is a list. With it, the rail becomes a single continuous object that happens to have some named stops along the way, which is a much better model of what reading actually feels like: one motion, occasionally passing a landmark.',
-      'The active dot needs to be legible from across the room — larger, brighter, or both — because it answers the one question the whole component exists to answer. Everything else on the rail is supporting cast.',
+      'The trouble is the asking itself. A scroll handler fires far more often than any human needs a decision made, so a lot of early scrollspy code exists purely to slow itself down — throttling to once every few frames, debouncing until scrolling settles, all to avoid doing real work at an unreasonable rate.',
+    ],
+  },
+  {
+    id: 'batching',
+    level: 1,
+    title: 'Reading layout in batches',
+    paragraphs: [
+      'The other half of the effort went into reading `getBoundingClientRect` without triggering a layout thrash — batching every read before any write, because interleaving the two forces the browser to recalculate geometry it had only just finished calculating.',
+    ],
+  },
+  {
+    id: 'text-rail',
+    level: 0,
+    title: 'A rail made of the words themselves',
+    paragraphs: [
+      'None of that effort was wasted, but it was effort spent compensating for a design that never needed a separate visual marker at all. The original demo\'s nav is just an unordered list of real links, styled like any table of contents; the "progress" part is an SVG line drawn behind that same list, and the highlighted stretch of it lines up with whichever links are current.',
+      "That's the detail this rebuild keeps: no circles standing in for content, no icon doing the section's job for it. The line follows the text, because the text is the nav.",
     ],
   },
   {
     id: 'intersection',
+    level: 0,
     title: 'What the browser already knows',
     paragraphs: [
-      "IntersectionObserver was built to answer a version of the same question the old scroll handlers were struggling with: is this element visible, and how visible. Instead of polling on every frame, you describe the visibility condition you care about once, and the browser tells you when it changes.",
-      'A common trick for "which section is the reader in" is to shrink the observed area to a thin band near the vertical center of the viewport, so a section only counts as current once it has actually reached the middle of the screen, not the moment its top edge peeks into view. It turns a naive first-to-appear race into something closer to the reader\'s actual attention.',
-      'It is still JavaScript, and it still runs on the main thread, but it runs on the browser\'s terms rather than on a timer of your own invention. That distinction is most of what separates a scrollspy that feels expensive from one you forget is running at all.',
+      'IntersectionObserver was built to answer a version of the same question scroll handlers were struggling with: is this element visible, and how visible. Describe the condition once, and the browser reports back only when it changes, on its own schedule rather than on a timer of your invention.',
+    ],
+  },
+  {
+    id: 'centre-band',
+    level: 1,
+    title: 'A band, not a point',
+    paragraphs: [
+      'The original demo does something slightly looser than an intersection threshold: a section counts as "on screen" if any part of it falls inside a band from 10% down to 80% of the viewport height. That band is generous on purpose — wide enough that two adjacent, shortish sections can both qualify at once.',
+    ],
+  },
+  {
+    id: 'drawing-the-path',
+    level: 0,
+    title: 'Drawing the path once',
+    paragraphs: [
+      'The rail itself is a single SVG `<path>`, built once on load and again on resize by walking every nav link in order and reading its actual on-screen position — no coordinates hand-authored anywhere.',
+    ],
+  },
+  {
+    id: 'vertical-strokes',
+    level: 1,
+    title: 'Vertical strokes per item',
+    paragraphs: [
+      "For each link, the path grows a short vertical stroke spanning that link's own height, at that link's own horizontal position. Stacked in document order, those strokes alone would already produce a plain vertical line for a flat list.",
+    ],
+  },
+  {
+    id: 'horizontal-jogs',
+    level: 1,
+    title: 'A jog at every indent change',
+    paragraphs: [
+      "The zigzag only appears where indentation changes between one item and the next: the path adds a short horizontal segment connecting the previous x position to the new one before continuing downward. It's this jog, repeated at every level change, that gives the line its snake-like shape.",
+    ],
+  },
+  {
+    id: 'highlighting-a-range',
+    level: 0,
+    title: 'Highlighting more than one item at a time',
+    paragraphs: [
+      'Once the full path length is known, showing progress is a `stroke-dasharray` trick: measure how far along the path the first currently-visible item starts and the last one ends, then draw a single visible dash spanning exactly that range and hide the rest.',
+      'Because the highlighted span is a min-to-max across every visible item rather than a single nearest one, two or three sections on screen together light up as one continuous stretch of line — which is the whole reason this page keeps its paragraphs short enough for that to happen regularly.',
     ],
   },
   {
     id: 'timelines',
+    level: 0,
     title: 'A timeline instead of a listener',
     paragraphs: [
-      'Scroll-driven animation asks a different question again: what if scroll position were not an event to react to, but a clock to animate against? A normal CSS animation runs against wall-clock time. `animation-timeline: scroll()` swaps that clock for the scroll offset of a container, so the animation simply is a function of where you are on the page.',
-      'There is no handler, no per-frame callback, and no JavaScript keeping the two in sync, because there was never anything to keep in sync — the browser\'s own compositor reads scroll position and paints the corresponding animation frame directly. The progress bar at the very top of this page is one keyframe, a scaleX from zero to one, told to use the document as its timeline instead of a stopwatch.',
-      'It is a small change of vocabulary with a large effect on where the work happens. The result is a bar that has never once caused a layout recalculation on your behalf.',
+      'Scroll-driven animation asks a different question again: what if scroll position were a clock to animate against, rather than an event to react to? `animation-timeline: scroll()` swaps an animation\'s usual wall-clock timer for the scroll offset of a container, so the animation simply is a function of where you are on the page — no handler keeping the two in sync, because there was never anything to keep in sync.',
     ],
   },
   {
     id: 'viewtimeline',
+    level: 0,
     title: 'Naming a piece of the page',
     paragraphs: [
-      'A document-wide scroll timeline gets you a single dial. To get a rail with nine independent dots, each aware of its own section, each section can be given a `view-timeline-name` — a small label like `--section-4` — that turns the moment that element travels through the viewport into its own private timeline.',
-      'Any element elsewhere on the page can then animate against that name using `animation-timeline: --section-4`, regardless of where it sits in the document. The dot in the rail and the paragraph it represents do not need to know about each other beyond sharing that one string.',
-      'It is a quietly elegant piece of indirection: the content declares where it is willing to be watched from, and the decoration elsewhere subscribes to that declaration, with the browser doing the introduction.',
+      'A document-wide scroll timeline gives a single dial. To let each nav item track its own section independently, that section can be given a `view-timeline-name` — a label like `--section-4` — turning the moment that element travels through the viewport into its own private timeline that anything else on the page can subscribe to by name.',
     ],
   },
   {
     id: 'twodials',
-    title: 'Two dials on one page',
+    level: 0,
+    title: 'Two dials, one page',
     paragraphs: [
-      'The two techniques compose rather than compete. A single `scroll(root)` timeline is the right tool for anything that should track the whole document at once — a top bar, a percentage counter, a background that slowly shifts hue from first paragraph to last.',
-      'A `view-timeline` per section is the right tool for anything that should care about one particular passage of the page — a dot that glows while its section is on screen, a heading that settles into place as it arrives, a pull quote that fades before it leaves.',
-      'The rail on this page, in its CSS-only mode, uses both at once: the thread behind the dots is one global dial, and each dot\'s own highlight is nine small private ones, all running without a single scroll listener between them.',
+      'The two techniques compose rather than compete. A single `scroll(root)` timeline suits anything tracking the whole document at once — the bar at the very top of this page. A `view-timeline` per section suits anything that should care about one particular passage — the CSS-only rail below highlights each item independently this way, which is also why several of its segments can glow at once with no coordination between them.',
     ],
   },
   {
     id: 'degrade',
+    level: 0,
     title: 'Degrading without breaking',
     paragraphs: [
-      'Not every browser understands `animation-timeline` yet, so anything built on it needs a plan for what happens in its absence — not a broken bar, just a bar that quietly stops moving and stays out of the way. Wrapping the enhancement in an `@supports (animation-timeline: scroll())` block keeps the fallback from ever looking like a mistake.',
-      'The same courtesy is owed to readers who have asked their operating system for less motion. A `prefers-reduced-motion` query turns the pulsing dot into a plain, static one — the information the rail carries survives even when the animation that usually delivers it does not.',
-      'Progressive enhancement has always meant this: build the version that works everywhere first, then let capable browsers do a little more, without ever making the extra part load-bearing.',
+      "Not every browser understands `animation-timeline` yet, so the CSS-only rail keeps its enhancement inside an `@supports (animation-timeline: view())` block — where it's missing, the list is still a perfectly ordinary set of anchor links. The same courtesy is owed to `prefers-reduced-motion`: the information the rail carries should survive even when the animation delivering it is turned off.",
     ],
   },
   {
     id: 'revisited',
+    level: 0,
     title: 'The rail, revisited',
     paragraphs: [
-      'Both rails on this page answer the same question the original demo answered: where am I, and how far is there left to go. One answers it with a composable, an IntersectionObserver, and a scroll listener from VueUse. The other answers it with nine named timelines and no JavaScript at all once the page has loaded.',
-      'Neither is more correct than the other. The JavaScript version can make judgment calls a stylesheet cannot — deciding which of several overlapping sections is the "real" current one, for instance — while the CSS version costs nothing once painted and never drifts out of sync with the compositor.',
-      'Use the switch in the corner to feel the difference for yourself. Then scroll back up, slowly, and watch the thread climb the rail either way.',
+      'Both rails on this page answer the same question the original demo answered: where am I, and what else is currently in view. One answers it with an SVG path measured in JavaScript on scroll and resize; the other answers it with fifteen independent view-timelines and no scroll listener at all.',
+      'Use the switch below to feel the difference, then scroll slowly back up and watch how each one treats a moment when two headings share the screen.',
     ],
   },
 ]

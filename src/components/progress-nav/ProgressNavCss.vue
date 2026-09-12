@@ -1,88 +1,120 @@
 <script setup lang="ts">
-// Deliberately no reactive state and no scroll handling here: every visual
-// change on this rail — the fill line growing, each dot lighting up — is
-// computed by the browser's compositor from CSS alone. The only per-item
-// value Vue supplies is which named view-timeline a dot should watch, which
-// mirrors the `view-timeline-name` that FillerSection already sets on its
-// matching <section>.
+// No reactive state, no scroll or resize listeners: every visual change on
+// this rail — each segment of the connecting line, each link's highlight —
+// is computed by the browser's compositor from a named view-timeline. The
+// only thing computed here is which items need a horizontal "jog" before
+// them, which is static geometry derived once from the section list, not a
+// runtime measurement.
 import { sections } from '@/data/sections'
 import '@/assets/rail.css'
+
+const items = sections.map((section, i) => ({
+  section,
+  hasJog: i > 0 && sections[i - 1]!.level !== section.level,
+}))
 </script>
 
 <template>
-  <nav class="rail rail--css" aria-label="Reading progress (CSS only)">
-    <div class="rail__frame">
-      <div class="rail__track" />
-      <div class="rail__fill rail__fill--css" />
-      <ol class="rail__list">
-        <li v-for="section in sections" :key="section.id">
-          <a
-            :href="`#${section.id}`"
-            class="rail__dot"
-            :aria-label="section.title"
-            :style="{ animationTimeline: `--section-${section.index}` }"
-          >
-            <span class="rail__dot-core" />
-            <span class="rail__tooltip">{{ section.title }}</span>
-          </a>
-        </li>
-      </ol>
-    </div>
+  <nav class="toc toc--css" aria-label="Reading progress (CSS only)">
+    <ul class="toc__list">
+      <li
+        v-for="item in items"
+        :key="item.section.id"
+        class="toc__item"
+        :class="`toc__item--level-${item.section.level}`"
+      >
+        <span
+          v-if="item.hasJog"
+          class="toc__rail-h"
+          aria-hidden="true"
+          :style="{ animationTimeline: `--section-${item.section.index}` }"
+        />
+        <span
+          class="toc__rail-v"
+          aria-hidden="true"
+          :style="{ animationTimeline: `--section-${item.section.index}` }"
+        />
+        <a
+          :href="`#${item.section.id}`"
+          class="toc__link toc__link--css"
+          :style="{ animationTimeline: `--section-${item.section.index}` }"
+        >
+          {{ item.section.title }}
+        </a>
+      </li>
+    </ul>
   </nav>
 </template>
 
 <style scoped>
-.rail__fill--css {
-  transform: scaleY(0);
+.toc__rail-v,
+.toc__rail-h {
+  position: absolute;
+  background: var(--rule);
+  pointer-events: none;
 }
 
-@supports (animation-timeline: scroll()) {
-  .rail__fill--css {
-    animation: grow-fill-y linear forwards;
-    animation-timeline: scroll(root);
-  }
+.toc__rail-v {
+  top: 0;
+  bottom: 0;
+  width: 2px;
 }
 
-@keyframes grow-fill-y {
-  from {
-    transform: scaleY(0);
-  }
-  to {
-    transform: scaleY(1);
-  }
+.toc__item--level-0 .toc__rail-v {
+  left: -0.75rem;
 }
 
-/* Each dot watches its own section's view-timeline (named via inline style)
-   and pulses while that section occupies the viewport. */
+.toc__item--level-1 .toc__rail-v {
+  left: 0.5rem;
+}
+
+.toc__rail-h {
+  top: 0;
+  left: -0.75rem;
+  width: 1.25rem;
+  height: 2px;
+}
+
 @supports (animation-timeline: view()) {
-  .rail--css .rail__dot-core {
-    animation: dot-focus linear both;
+  .toc__rail-v,
+  .toc__rail-h {
+    animation: bar-glow linear both;
+    animation-range: cover 0% cover 100%;
+  }
+
+  .toc__link--css {
+    animation: link-glow linear both;
     animation-range: cover 0% cover 100%;
   }
 }
 
-@keyframes dot-focus {
+@keyframes bar-glow {
   0%,
   100% {
-    background: var(--paper);
-    border-color: var(--ink-faint);
-    transform: scale(1);
+    background: var(--rule);
   }
   50% {
-    background: var(--accent-rust);
-    border-color: var(--accent-rust);
-    transform: scale(1.35);
+    background: var(--accent-teal);
+  }
+}
+
+@keyframes link-glow {
+  0%,
+  100% {
+    color: var(--ink-faint);
+    transform: translateX(0);
+  }
+  50% {
+    color: var(--ink);
+    transform: translateX(5px);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .rail__fill--css,
-  .rail--css .rail__dot-core {
+  .toc__rail-v,
+  .toc__rail-h,
+  .toc__link--css {
     animation: none;
-  }
-
-  .rail__fill--css {
-    transform: scaleY(0);
   }
 }
 </style>
