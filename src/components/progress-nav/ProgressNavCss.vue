@@ -33,8 +33,9 @@ const { items } = useRailItems(sections)
 .toc__rail-v,
 .toc__rail-h {
   position: absolute;
-  background: var(--rule);
+  background: transparent;
   pointer-events: none;
+  border-radius: 1px;
 }
 
 .toc__rail-v {
@@ -73,28 +74,35 @@ const { items } = useRailItems(sections)
 }
 
 @keyframes bar-glow {
-
-  0%,
-  100% {
-    background: var(--rule);
+  0% {
+    background: transparent;
   }
 
-  50% {
+  15%,
+  85% {
     background: var(--accent-teal);
+  }
+
+  100% {
+    background: transparent;
   }
 }
 
 @keyframes link-glow {
-
-  0%,
-  100% {
+  0% {
     color: var(--ink-faint);
     transform: translateX(0);
   }
 
-  50% {
+  15%,
+  85% {
     color: var(--ink);
     transform: translateX(5px);
+  }
+
+  100% {
+    color: var(--ink-faint);
+    transform: translateX(0);
   }
 }
 

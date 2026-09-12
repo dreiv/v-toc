@@ -6,9 +6,10 @@ defineProps<{ section: Section }>()
 </script>
 
 <template>
-  <component :is="section.level === 0 ? 'section' : 'aside'" :id="section.id"
-    :style="{ viewTimelineName: sectionTimelineName(section.index) }" class="section"
-    :class="`section--level-${section.level}`">
+  <component :is="section.level === 0 ? 'section' : 'aside'" :id="section.id" :style="{
+    viewTimelineName: sectionTimelineName(section.index),
+    viewTimelineInset: '10% 20%',
+  }" class="section" :class="`section--level-${section.level}`">
     <component :is="section.level === 0 ? 'h2' : 'h3'" class="section__title">
       {{ section.title }}
     </component>
