@@ -12,7 +12,7 @@ const { items } = useRailItems(sections)
     <ul class="toc__list">
       <li v-for="item in items" :key="item.section.id" class="toc__item"
         :class="`toc__item--level-${item.section.level}`">
-        <span class="toc__rail" :class="{ 'toc__rail--jog': item.hasJog }" aria-hidden="true"
+        <span class="toc__rail" :class="{ 'toc__rail--indent': item.indented }" aria-hidden="true"
           :style="{ animationTimeline: sectionTimelineName(item.section.index) }" />
         <a :href="`#${item.section.id}`" class="toc__link toc__link--css"
           :style="{ animationTimeline: sectionTimelineName(item.section.index) }">
@@ -43,7 +43,7 @@ const { items } = useRailItems(sections)
   border-right-width: 2px;
 }
 
-.toc__rail--jog {
+.toc__rail--indent {
   border-top-width: 2px;
 }
 

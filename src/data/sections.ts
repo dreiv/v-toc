@@ -82,11 +82,11 @@ const content: Array<Pick<Section, 'id' | 'level' | 'title' | 'paragraphs'>> = [
     ],
   },
   {
-    id: 'horizontal-jogs',
+    id: 'horizontal-indents',
     level: 1,
-    title: 'A jog at every indent change',
+    title: 'A indent at every indent change',
     paragraphs: [
-      "The zigzag only appears where indentation changes between one item and the next: the path adds a short horizontal segment connecting the previous x position to the new one before continuing downward. It's this jog, repeated at every level change, that gives the line its snake-like shape.",
+      "The zigzag only appears where indentation changes between one item and the next: the path adds a short horizontal segment connecting the previous x position to the new one before continuing downward. It's this indent, repeated at every level change, that gives the line its snake-like shape.",
     ],
   },
   {

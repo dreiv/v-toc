@@ -1,0 +1,19 @@
+.section {
+  scroll-margin-top: 2rem;
+  max-width: 34rem;
+}
+
+.section__title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.25;
+  margin: 0 0 0.6rem;
+}
+
+.section__paragraph {
+  font-family: var(--font-serif);
+  line-height: 1.7;
+  color: var(--ink-soft);
+  margin: 0 0 0.9rem;
+}

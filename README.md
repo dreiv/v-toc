@@ -7,7 +7,7 @@ control at the bottom of the page.
 
 - **Vue + scroll** (`ProgressNavJs.vue`) — a `useProgressPath` composable ports the original demo's
   own algorithm: it walks the real nav links, measures their on-screen positions, and draws one
-  SVG path that jogs sideways at every indent change. On scroll it finds every section currently
+  SVG path that indents sideways at every indent change. On scroll it finds every section currently
   inside a 10%–80% viewport band and highlights the single stretch of path spanning from the
   first one to the last, via a `stroke-dasharray` trick — so two sections on screen together light
   up as one continuous run.
@@ -22,7 +22,7 @@ control at the bottom of the page.
 - The **top bar** is always CSS-only, as the simplest possible demonstration of
   `animation-timeline: scroll()`.
 
-Both rails render the *same* table-of-contents text (a real `<nav><ul><li><a>` list, not
+Both rails render the _same_ table-of-contents text (a real `<nav><ul><li><a>` list, not
 decorative dots), reading from one `src/data/sections.ts` — including which items are nested
 subsections, which is what gives the connecting line its zigzag. Content sections are normal
 flowing prose (no forced full-viewport padding), so it's common for two or three headings to sit

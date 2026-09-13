@@ -18,7 +18,7 @@ interface ItemMeta {
 
 /**
  * Drives the JS rail: builds one SVG path through every nav link's real
- * on-screen position (jogging sideways wherever indentation changes), then
+ * on-screen position (indenting sideways wherever indentation changes), then
  * on scroll highlights the stretch spanning every currently-visible section.
  */
 export function useProgressPath(items: Section[]) {
