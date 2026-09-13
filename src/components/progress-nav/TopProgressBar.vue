@@ -1,7 +1,3 @@
-<script setup lang="ts">
-// No script needed: the fill is driven entirely by animation-timeline: scroll().
-</script>
-
 <template>
   <div class="top-bar" role="presentation">
     <div class="top-bar__fill" />
@@ -26,7 +22,6 @@
   transform: scaleX(0);
 }
 
-/* Progressive enhancement: only animate where the browser understands it. */
 @supports (animation-timeline: scroll()) {
   .top-bar__fill {
     animation: grow-fill linear forwards;
@@ -38,6 +33,7 @@
   from {
     transform: scaleX(0);
   }
+
   to {
     transform: scaleX(1);
   }

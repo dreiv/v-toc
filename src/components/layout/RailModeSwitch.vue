@@ -8,25 +8,13 @@ defineEmits<{ 'update:modelValue': [value: RailMode] }>()
 
 <template>
   <div class="switch" role="radiogroup" aria-label="Progress rail implementation">
-    <button
-      type="button"
-      role="radio"
-      :aria-checked="modelValue === 'js'"
-      class="switch__option"
-      :class="{ 'switch__option--active': modelValue === 'js' }"
-      @click="$emit('update:modelValue', 'js')"
-    >
+    <button type="button" role="radio" :aria-checked="modelValue === 'js'" class="switch__option"
+      :class="{ 'switch__option--active': modelValue === 'js' }" @click="$emit('update:modelValue', 'js')">
       <Cpu :size="14" aria-hidden="true" />
       Vue + scroll
     </button>
-    <button
-      type="button"
-      role="radio"
-      :aria-checked="modelValue === 'css'"
-      class="switch__option"
-      :class="{ 'switch__option--active': modelValue === 'css' }"
-      @click="$emit('update:modelValue', 'css')"
-    >
+    <button type="button" role="radio" :aria-checked="modelValue === 'css'" class="switch__option"
+      :class="{ 'switch__option--active': modelValue === 'css' }" @click="$emit('update:modelValue', 'css')">
       <Binary :size="14" aria-hidden="true" />
       CSS only
     </button>
