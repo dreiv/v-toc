@@ -1,8 +1,3 @@
-/* Shared skeleton for both rails: a fixed list of real links styled like a
-   table of contents, with a variant-specific marker layered behind it. Kept
-   out of each component's scoped style so the two variants can't visually
-   drift apart. */
-
 .toc {
   position: fixed;
   left: clamp(1.25rem, 4vw, 3rem);
@@ -10,6 +5,10 @@
   transform: translateY(-50%);
   width: 13rem;
   z-index: 30;
+
+  @media (max-width: 55rem) {
+    display: none;
+  }
 }
 
 .toc__list {
@@ -33,33 +32,24 @@
   display: inline-block;
   font-family: var(--font-mono);
   font-size: 0.78rem;
-  color: var(--ink-faint);
+  color: var(--color-ink-faint);
   text-decoration: none;
-  transition:
-    color 0.3s cubic-bezier(0.23, 1, 0.32, 1),
-    transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-}
+  transition-property: color, transform;
+  transition-duration: 0.3s;
+  transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
 
-.toc__item--level-1 .toc__link {
-  font-size: 0.74rem;
-}
+  .toc__item--level-1 & {
+    font-size: 0.74rem;
+  }
 
-.toc__link:focus-visible {
-  outline: 2px solid var(--accent-teal);
-  outline-offset: 3px;
-  border-radius: 2px;
-}
+  &:focus-visible {
+    outline: 2px solid var(--color-accent-teal);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
 
-/* JS variant toggles this class; the CSS variant applies the same look via
-   an animation bound to the section's own view-timeline. */
-.toc__item--visible > .toc__link,
-.toc__link--visible {
-  color: var(--ink);
-  transform: translateX(5px);
-}
-
-@media (max-width: 55rem) {
-  .toc {
-    display: none;
+  .toc__item--visible > & {
+    color: var(--color-ink);
+    transform: translateX(5px);
   }
 }

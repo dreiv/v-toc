@@ -6,31 +6,16 @@ defineProps<{ section: Section }>()
 </script>
 
 <template>
-  <aside :id="section.id" class="section section--sub" :style="{
+  <aside :id="section.id" class="my-2 max-w-136 scroll-mt-8 border-l-2 border-rule py-4 pl-5" :style="{
     viewTimelineName: sectionTimelineName(section.index),
     viewTimelineInset: '10% 20%',
   }">
-    <h3 class="section__title">{{ section.title }}</h3>
-    <p v-for="(paragraph, i) in section.paragraphs" :key="i" class="section__paragraph">
+    <h3 class="m-0 mb-[0.6rem] font-serif text-[1.05rem] leading-tight font-semibold text-ink-soft">
+      {{ section.title }}
+    </h3>
+    <p v-for="(paragraph, i) in section.paragraphs" :key="i"
+      class="m-0 mb-[0.9rem] font-serif text-[0.95rem] leading-[1.7] text-ink-soft">
       {{ paragraph }}
     </p>
   </aside>
 </template>
-
-<style scoped src="./filler-section-shared.css"></style>
-<style scoped>
-.section--sub {
-  padding: 1rem 0 1rem 1.25rem;
-  margin-block: 0.5rem;
-  border-left: 2px solid var(--rule);
-}
-
-.section--sub .section__title {
-  font-size: 1.05rem;
-  color: var(--ink-soft);
-}
-
-.section--sub .section__paragraph {
-  font-size: 0.95rem;
-}
-</style>

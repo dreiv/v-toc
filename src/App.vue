@@ -22,7 +22,7 @@ onMounted(() => { rootEl.value?.style.setProperty('timeline-scope', timelineScop
   <div ref="root" class="app-root">
     <TopProgressBar />
 
-    <div class="page">
+    <div class="ps-6 pe-6 min-[55rem]:ml-60">
       <PageHero />
       <FillerContent />
     </div>
@@ -33,13 +33,3 @@ onMounted(() => { rootEl.value?.style.setProperty('timeline-scope', timelineScop
     <RailModeSwitch v-model="mode" />
   </div>
 </template>
-
-<style scoped>
-.page {
-  padding-inline: 1.5rem;
-
-  @media (min-width: 55rem) {
-    margin-left: 15rem;
-  }
-}
-</style>

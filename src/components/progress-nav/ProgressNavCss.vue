@@ -8,7 +8,7 @@ const { items } = useRailItems(sections)
 </script>
 
 <template>
-  <nav class="toc toc--css" aria-label="Reading progress (CSS only)">
+  <nav class="toc" aria-label="Reading progress (CSS only)">
     <ul class="toc__list">
       <li v-for="item in items" :key="item.section.id" class="toc__item"
         :class="`toc__item--level-${item.section.level}`">
@@ -33,18 +33,18 @@ const { items } = useRailItems(sections)
   box-sizing: border-box;
   pointer-events: none;
   border: 0 solid transparent;
-}
 
-.toc__item--level-0 .toc__rail {
-  border-left-width: 2px;
-}
+  .toc__item--level-0 & {
+    border-left-width: 2px;
+  }
 
-.toc__item--level-1 .toc__rail {
-  border-right-width: 2px;
-}
+  .toc__item--level-1 & {
+    border-right-width: 2px;
+  }
 
-.toc__rail--indent {
-  border-top-width: 2px;
+  &.toc__rail--indent {
+    border-top-width: 2px;
+  }
 }
 
 @supports (animation-timeline: view()) {
@@ -66,7 +66,7 @@ const { items } = useRailItems(sections)
 
   15%,
   85% {
-    border-color: var(--accent-teal);
+    border-color: var(--color-accent-teal);
   }
 
   100% {
@@ -76,18 +76,18 @@ const { items } = useRailItems(sections)
 
 @keyframes link-glow {
   0% {
-    color: var(--ink-faint);
+    color: var(--color-ink-faint);
     transform: translateX(0);
   }
 
   15%,
   85% {
-    color: var(--ink);
+    color: var(--color-ink);
     transform: translateX(5px);
   }
 
   100% {
-    color: var(--ink-faint);
+    color: var(--color-ink-faint);
     transform: translateX(0);
   }
 }

@@ -18,28 +18,11 @@ const { pathEl, svgEl, setLinkEl, visibleIds, goTo } = useProgressPath(sections)
       </li>
     </ul>
 
-    <svg ref="svgEl" class="toc__marker" aria-hidden="true">
-      <path ref="pathEl" stroke-width="2" fill="transparent" stroke-dasharray="0, 0, 0, 1000" stroke-linecap="round"
+    <svg ref="svgEl" class="pointer-events-none absolute inset-0 z-[-1] h-full w-full overflow-visible"
+      aria-hidden="true">
+      <path ref="pathEl" class="stroke-accent-teal transition-[stroke-dasharray,opacity] duration-300 ease-[ease]"
+        stroke-width="2" fill="transparent" stroke-dasharray="0, 0, 0, 1000" stroke-linecap="round"
         stroke-linejoin="round" opacity="0" />
     </svg>
   </nav>
 </template>
-
-<style scoped>
-.toc__marker {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  pointer-events: none;
-  overflow: visible;
-}
-
-.toc__marker path {
-  stroke: var(--accent-teal);
-  transition:
-    stroke-dasharray 0.3s ease,
-    opacity 0.3s ease;
-}
-</style>
