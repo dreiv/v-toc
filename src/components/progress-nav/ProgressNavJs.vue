@@ -3,7 +3,7 @@ import { sections } from '@/data/sections'
 import { useProgressPath } from '@/composables/useProgressPath'
 import '@/assets/rail.css'
 
-const { setLinkEl, visibleIds, goTo } = useProgressPath(sections)
+const { pathEl, svgEl, setLinkEl, visibleIds, goTo } = useProgressPath(sections)
 </script>
 
 <template>
